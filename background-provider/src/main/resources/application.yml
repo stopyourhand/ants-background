@@ -1,0 +1,85 @@
+# Spring容器相关配置
+spring:
+  application:
+    # Spring中应用程序名称
+    name: background-provider
+  # redis配置相关信息
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+  # 配置数据库相关信息
+  datasource:
+    url: jdbc:mysql://localhost:3306/ants_base?serverTimezone=GMT
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # 当遇到同样名字的时候，是否允许覆盖注册
+  main:
+    allow-bean-definition-overriding: true
+
+
+# Mybatis配置
+mybatis:
+  # 映射文件所在位置(xml文件)
+  mapper-locations: classpath:mapper/*/*.xml
+  # 扫描实体类下的包，起别名
+  type-aliases-package: com.ants.background.entity
+
+# Dubbo相关配置
+dubbo:
+  # 基本包扫描Dubbo组件，即使用Dubbo提供的@Service
+  scan:
+    basePackages: com.ants.background.provider.impl
+  # ApplicationConfig Bean
+  application:
+    # Dubbo中应用程序编号
+    id: background-provider
+    # Dubbo中应用程序名称
+    name: background-provider
+    # dubbo的在线运维端口
+    qos-port: 22222
+    # 开启在线运维
+    qos-enable: true
+  # 协议配置，在注册中心里区分哪个消费者使用
+  protocol:
+    id: dubbo
+    name: dubbo
+    #生产者和消费者的端口号必须一致
+    port: 12345
+    #标识这是一个服务提供者(生产者)
+    status: server
+    #序列化
+    serialization: kryo
+  # 注册中心配置
+  registry:
+    id: zookeeper
+    address: zookeeper://192.168.43.86:2181?backup=192.168.43.86:2182,192.168.43.86:2183
+  # 负载均衡策略
+  provider:
+    loadbalance: roundrobin
+
+# 启用Dubbo所有端点
+management:
+  endpoint:
+    dubbo:
+      enabled: true
+    dubbo-shutdown:
+      enabled: true
+    dubbo-configs:
+      enabled: true
+    dubbo-services:
+      enabled: true
+    dubbo-references:
+      enabled: true
+    dubbo-properties:
+      enabled: true
+  # Dubbo的状态检查器
+  health:
+    dubbo:
+      status:
+        # 状态检查器名称默认值(默认值:“memory”，“load”)
+        defaults: memory
+        # 状态检查器名称附加(默认:空)
+        extras: load,threadpool
+
